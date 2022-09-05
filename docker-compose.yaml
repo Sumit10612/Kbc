@@ -1,0 +1,29 @@
+version: '3.9'
+
+services:
+  mongo:
+    image: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - data:/data/db
+
+  api:
+    build:
+      context: .
+      dockerfile: ./src/CoreApi/Dockerfile
+    depends_on:
+      - mongo
+    ports:
+      - "7001:7001"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:7001
+      - CONNECTIONSTRINGS__MONGO=mongodb://mongo:27017
+      - AZUREAD_INSTANCE=https://login.microsoftonline.com
+      - AZUREAD_DOMAIN=<domain>
+      - AZUREAD_TENANTID=<tenant_id>
+      - AZUREAD_CLIENTID=<client_id>
+
+volumes:
+  data:
