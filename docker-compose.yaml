@@ -14,7 +14,6 @@ services:
       dockerfile: ./src/CoreApi/Dockerfile
     depends_on:
       - mongo
-    entrypoint: /bin/sh -c "update-ca-certificates && dotnet CoreApi.dll"
     ports:
       - "7001:7001"
     environment:
@@ -22,9 +21,9 @@ services:
       - ASPNETCORE_URLS=http://+:7001
       - CONNECTIONSTRINGS__MONGO=mongodb://mongo:27017
       - AZUREAD__INSTANCE=https://login.microsoftonline.com
-      - AZUREAD__DOMAIN=<domain>
-      - AZUREAD__TENANTID=<teneant_id>
-      - AZUREAD__CLIENTID=<client_id>
+      - AZUREAD__DOMAIN=<Domain>
+      - AZUREAD__TENANTID=<TenantId>
+      - AZUREAD__CLIENTID=<ClientId>
 
   client:
     build:
@@ -32,6 +31,11 @@ services:
       dockerfile: ./src/Client/Dockerfile
     depends_on:
       - api
+    environment:
+      - API_URL=http://api:7001
+      - AZUREAD_CLIENTID=<ClientId>
+      - AZUREAD_AUTHORITY=<Authority>
+      - AZUREAD_REDIRECTURI=http://client:80
     ports:
       - "80:80"
 
