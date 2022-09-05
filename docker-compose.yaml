@@ -25,9 +25,15 @@ services:
       - AZUREAD__DOMAIN=<domain>
       - AZUREAD__TENANTID=<teneant_id>
       - AZUREAD__CLIENTID=<client_id>
-    volumes:
-      - ./localhost.pfx:/https/localhost.pfx:ro
-      - ./localhost.crt:/usr/local/share/ca-certificates/localhost.crt:ro
+
+  client:
+    build:
+      context: .
+      dockerfile: ./src/Client/Dockerfile
+    depends_on:
+      - api
+    ports:
+      - "80:80"
 
 volumes:
   data:
