@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faArrowDown, faCaretSquareLeft, faCaretSquareRight, faDiceOne, faEdit, faForward, faGem, faHome, faIndianRupeeSign, faInfoCircle, faPlay, faQuestionCircle, faRupeeSign, faSignIn, faSignOut, faTrash } from '@fortawesome/free-solid-svg-icons';
 
@@ -16,6 +17,7 @@ import { ShowComponent } from './component/show/show.component';
 import { AuthModule } from './auth/auth.module';
 import { MsalRedirectComponent } from '@azure/msal-angular';
 import { CreateQuestionComponent } from './component/create-question/create-question.component';
+import { NgxMasonryModule } from 'ngx-masonry';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,9 @@ import { CreateQuestionComponent } from './component/create-question/create-ques
     FontAwesomeModule,
     FormsModule,
     HttpClientModule,
-    AuthModule
+    AuthModule,
+    NgxMasonryModule,
+    BrowserAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent, MsalRedirectComponent]
