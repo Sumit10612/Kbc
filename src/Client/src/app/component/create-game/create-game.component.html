@@ -1,0 +1,58 @@
+<div *ngIf="questions$ | async as questions">
+    <form #creategame="ngForm" (ngSubmit)="onSubmit(questions)">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card bg-dark text-white border-warning">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <input class="form-control" type="text" id="game_name" name="game_name" required
+                                    [(ngModel)]="game.name" placeholder="Game Name">
+                            </div>
+                            <div class="col-sm-5">
+                                <textarea class="form-control" id="description" name="description"
+                                    [(ngModel)]="game.description" placeholder="(Optional) Description"></textarea>
+                            </div>
+                            <div class="col-sm-2 form-check">
+                                <input type="checkbox" class="form-check-input" id="private_game" name="private_game"
+                                    [(ngModel)]="game.isPrivate">
+                                <label class="form-check-label" for="private_game">Private Game?</label>
+                            </div>
+                            <div class="col-sm-1"><button type="submit"
+                                    [disabled]="!creategame.valid || questions.length < 1"
+                                    class="btn btn-primary mb-3 float-end">Submit</button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-sm-6">
+                <app-create-question></app-create-question>
+            </div>
+            <div class="col-sm-6">
+                <div class="card bg-dark text-white border-warning overflow-auto" [ngStyle]="{'height':height}"
+                    *ngIf="questions.length >0">
+                    <div class=" card-body row" *ngFor="let question of questions; index as i">
+                        <div class="col-sm-10">
+                            <sup *ngIf="question.isPrivate" class="text-info">(<i>private</i>)</sup>
+                            <sub> {{i+1}}. {{question.text}}</sub><br />
+                            <sub *ngFor="let option of question.options; index as j"
+                                [ngClass]="option.isCorrect?'text-success':''"> <i>({{j+1}}).{{option.text}} </i></sub>
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="button" class="btn btn-outline-danger btn-sm float-end"
+                                (click)="deleteQuestion(question)">
+                                <fa-icon [icon]="['fas', 'trash']"></fa-icon>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm float-end"
+                                (click)="editQuestion(question)">
+                                <fa-icon [icon]="['fas', 'edit']"></fa-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

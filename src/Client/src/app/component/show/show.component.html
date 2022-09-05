@@ -1,0 +1,73 @@
+<div class="container-fluid" *ngIf="game$ | async as game">
+    <div class="card bg-dark text-white border-warning text-center">
+        <h5>Namaskar ! Let's play Kaun Banega Crorepati!</h5>
+    </div>
+    <div class=" row" style="margin-top: 1%;">
+        <div class="col-sm-3">
+            <div class="card text-white border-warning bg-dark">
+                <div class="card bg-dark">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-primary" (click)="start()" *ngIf="!gameStarted">
+                                <fa-icon [icon]="['fas', 'play']"></fa-icon> Start Game!
+                            </button>
+                            <a routerLink="/dashboard" class="btn btn-primary" *ngIf="gameStarted">Quit</a>
+                            <button type="button" class="btn btn-primary" (click)="next()" *ngIf="gameStarted">
+                                <fa-icon [icon]="['fas', 'forward']"></fa-icon> Next
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card bg-dark text-white">
+                    <div class="card-body">
+                        Current Winning: <p>
+                            <fa-icon [icon]="['fas', 'indian-rupee-sign']"></fa-icon>{{currentQuestionIndex + 1 > 1 ?
+                            prizeMoney[15- (currentQuestionIndex)].amount : ''}}
+                        </p>
+                        <p>Guaranteed Winnings: </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div *ngIf="currentQuestionIndex >= 0">
+                <div class="card bg-dark text-white text-center border-warning">
+                    <p>{{game.questions[currentQuestionIndex].text}}</p>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6" *ngFor="let option of game.questions[currentQuestionIndex].options">
+                        <div class="card text-white text-center border-warning"
+                            [ngClass]="showCorrectOption ? option.isCorrect ? 'bg-success' : 'bg-danger': 'bg-dark'"
+                            (click)="showAnswer()">
+                            {{option.text}}
+                        </div>
+                    </div>
+                </div>
+                <p class="text-white" style="margin-top: 10px;">
+                    <fa-icon [icon]="['fas', 'info-circle']"></fa-icon>
+                    <i>{{game.questions[currentQuestionIndex].info}}</i>
+                </p>
+            </div>
+
+            <div class="row text-center">
+                <div class="col-sm-12">
+                    <img class="col-sm-5" src="./assets/images/kbc-logo.png" alt="kbc-logo">
+                </div>
+            </div>
+
+        </div>
+        <div class="col-sm-1"></div>
+        <div class="col-sm-2">
+            <div class="card bg-dark border-warning">
+                <div class="card bg-dark text-white text-center" *ngFor="let prize of prizeMoney"
+                    [ngClass]="prize.index == currentQuestionIndex + 1 ? 'border-warning' : ''" style="margin: 5px;">
+                    <span [ngClass]="prize.break ? 'text-primary' : ''">
+                        {{prize.index}}.&nbsp;
+                        <fa-icon [icon]="['fas', 'gem']"></fa-icon>&nbsp;<fa-icon [icon]="['fas', 'indian-rupee-sign']">
+                        </fa-icon>&nbsp;{{prize.amount}}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

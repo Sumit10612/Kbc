@@ -1,0 +1,27 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand btn btn-link" routerLink="/dashboard" *ngIf="loginDisplay">
+        <fa-icon [icon]="['fas', 'home']"></fa-icon>
+    </a>
+    <a class="navbar-brand" routerLink="/home" *ngIf="!loginDisplay">
+        <fa-icon [icon]="['fas', 'home']"></fa-icon>
+    </a>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" [routerLink]="['/rules']" routerLinkActive="active"> Rules </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" [routerLink]="['/about']" routerLinkActive="active"> About Me </a>
+            </li>
+        </ul>
+        <section>
+            <button class="btn btn-link float-end" *ngIf="!loginDisplay" (click)="login()">
+                <fa-icon [icon]="['fas', 'sign-in']"></fa-icon>
+            </button>
+            <button class="btn btn-link float-end" *ngIf="loginDisplay" (click)="logout()">
+                <fa-icon [icon]="['fas', 'sign-out']"></fa-icon>
+            </button>
+        </section>
+    </div>
+</nav>

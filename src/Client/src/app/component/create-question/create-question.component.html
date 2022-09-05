@@ -1,0 +1,39 @@
+<div class="card bg-dark text-white border-warning">
+    <div class="card-body">
+        <form #questionForm="ngForm" (ngSubmit)="onSubmit(question)" *ngIf="question$ | async as question">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="question">
+                    <fa-icon [icon]="['fas', 'question-circle']"></fa-icon>
+                </span>
+                <input type="text" class="form-control" id="question" name="question" required
+                    [(ngModel)]="question.text" placeholder="Enter your question here!">
+            </div>
+            <div class="input-group mb-3" *ngFor="let option of question.options; index as i">
+                <span class="input-group-text">
+                    <fa-icon [icon]="['fas', 'dice-one']" id="option{{i}}"></fa-icon>
+                </span>
+                <input type="text" class="form-control" id="option{{i}}" name="option{{i}}" [(ngModel)]="option.text"
+                    placeholder="Enter option {{i + 1}} here! and mark correct option" required>
+                <span class="input-group-text">
+                    <input type="radio" class="form-check-radio" name="correct" [value]="option.isCorrect" required
+                        (click)="setOption(question.options, i)" [checked]="option.isCorrect">
+                </span>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text">
+                    <fa-icon [icon]="['fas', 'info-circle']" id="info"></fa-icon>
+                </span>
+                <textarea class="form-control" id="info" name="description" [(ngModel)]="question.info"
+                    placeholder="(Optional) Enter Additional Information about the right answer here!"></textarea>
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="private" name="private"
+                    [(ngModel)]="question.isPrivate">
+                <label class="form-check-label" for="private">Private?</label>
+                <button type="submit" class="btn btn-primary mb-3 float-end" [disabled]="!questionForm.valid">
+                    <fa-icon [icon]="['fas', 'caret-square-right']" id="info"></fa-icon>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
