@@ -8,7 +8,7 @@ using CoreApi.Dtos;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAzureAdAuthentication();
+// builder.Services.AddAzureAdAuthentication();
 
 builder.Services.AddMongoDatabase()
     .AddMongoRepository<Game>();
@@ -21,33 +21,33 @@ var app = builder.Build();
 
 app.UseCors();
 
-app.UseAuthentication();
-app.UseAuthorization();
+// app.UseAuthentication();
+// app.UseAuthorization();
 
-app.MapGet("/", async (IRepository<Game> repo, AuthenticatedUser user) =>
-    Results.Ok((await repo.GetAllAsync(d => d.OwnerId == user.Id)).ToGameInfo())
+app.MapGet("/", async (IRepository<Game> repo) =>
+    Results.Ok((await repo.GetAllAsync(d => d.OwnerId == "3540bae1-079d-43a3-b0d8-13ffff9dc782")).ToGameInfo())
 );
 
-app.MapGet("/{id}", async (Guid id, IRepository<Game> repo, AuthenticatedUser user) =>
-    Results.Ok((await repo.GetAsync(d => d.Id == id && d.OwnerId == user.Id)).AsDto())
+app.MapGet("/{id}", async (Guid id, IRepository<Game> repo) =>
+    Results.Ok((await repo.GetAsync(d => d.Id == id && d.OwnerId == "3540bae1-079d-43a3-b0d8-13ffff9dc782")).AsDto())
 );
 
-app.MapPost("/", async (CreateGameDto dto, IRepository<Game> repo, AuthenticatedUser user) =>
+app.MapPost("/", async (CreateGameDto dto, IRepository<Game> repo) =>
 {
     var gameToInsert = dto.AsEntity();
-    gameToInsert.OwnerId = user.Id;
+    gameToInsert.OwnerId = "3540bae1-079d-43a3-b0d8-13ffff9dc782";
 
     await repo.CreateAsync(gameToInsert);
 
     return Results.Created("", gameToInsert.Id);
 });
 
-app.MapPut("/", async (Guid id, UpdateGameDto dto, IRepository<Game> repo, AuthenticatedUser user) =>
+app.MapPut("/", async (Guid id, UpdateGameDto dto, IRepository<Game> repo) =>
 {
     var gameToUpdate = await repo.GetAsync(d => d.Id == id);
     if (gameToUpdate == null)
         return Results.NotFound();
-    if (gameToUpdate.OwnerId != user.Id)
+    if (gameToUpdate.OwnerId != "3540bae1-079d-43a3-b0d8-13ffff9dc782")
         return Results.Forbid();
 
     gameToUpdate.Questions = dto.Questions.AsEntity();
@@ -60,12 +60,12 @@ app.MapPut("/", async (Guid id, UpdateGameDto dto, IRepository<Game> repo, Authe
     return Results.Ok(gameToUpdate.ToGameInfo());
 });
 
-app.MapDelete("/{id}", async (Guid id, IRepository<Game> repo, AuthenticatedUser user) =>
+app.MapDelete("/{id}", async (Guid id, IRepository<Game> repo) =>
 {
     var gameToDelete = await repo.GetAsync(d => d.Id == id);
     if (gameToDelete == null)
         return Results.NotFound();
-    else if (gameToDelete.OwnerId != user.Id)
+    else if (gameToDelete.OwnerId != "3540bae1-079d-43a3-b0d8-13ffff9dc782")
         return Results.Forbid();
 
     await repo.RemoveAsync(id);

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
-import { EventMessage, EventType, InteractionStatus } from '@azure/msal-browser';
+// import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
+// import { EventMessage, EventType, InteractionStatus } from '@azure/msal-browser';
 import { filter } from 'rxjs';
 
 @Component({
@@ -9,31 +9,31 @@ import { filter } from 'rxjs';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  loginDisplay = false;
+  loginDisplay = true;
 
-  constructor(private _authService: MsalService,
-    private _msalBroadcastService: MsalBroadcastService,
-  ) { }
+  // constructor(private _authService: MsalService,
+  //   private _msalBroadcastService: MsalBroadcastService,
+  // ) { }
 
   ngOnInit(): void {
-    this._msalBroadcastService.msalSubject$
-      .pipe(
-        filter((msg: EventMessage) => msg.eventType === EventType.LOGIN_SUCCESS),
-      )
-      .subscribe((result: EventMessage) => {
-        console.log(result);
-      });
+    //   this._msalBroadcastService.msalSubject$
+    //     .pipe(
+    //       filter((msg: EventMessage) => msg.eventType === EventType.LOGIN_SUCCESS),
+    //     )
+    //     .subscribe((result: EventMessage) => {
+    //       console.log(result);
+    //     });
 
-    this._msalBroadcastService.inProgress$
-      .pipe(
-        filter((status: InteractionStatus) => status === InteractionStatus.None)
-      )
-      .subscribe(() => {
-        this.setLoginDisplay();
-      })
+    //   this._msalBroadcastService.inProgress$
+    //     .pipe(
+    //       filter((status: InteractionStatus) => status === InteractionStatus.None)
+    //     )
+    //     .subscribe(() => {
+    //       this.setLoginDisplay();
+    //     })
   }
 
-  private setLoginDisplay() {
-    this.loginDisplay = this._authService.instance.getAllAccounts().length > 0;
-  }
+  // private setLoginDisplay() {
+  //   this.loginDisplay = this._authService.instance.getAllAccounts().length > 0;
+  // }
 }

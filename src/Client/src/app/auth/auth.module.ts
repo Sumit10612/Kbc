@@ -16,7 +16,7 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 ||
       auth: {
         clientId: environment.azureAd.clientId,
         authority: environment.azureAd.authority,
-        redirectUri: environment.azureAd.redirectUri
+        redirectUri: environment.azureAd.redirectUri,
       },
       cache: {
         cacheLocation: 'localStorage',
