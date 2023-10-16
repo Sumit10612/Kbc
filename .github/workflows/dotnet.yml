@@ -37,10 +37,4 @@ jobs:
           let msg = ${{ steps.check_packages.outputs.outdated }};
           msg = msg.replace(/`/g, "_").replace(/;/, "");
           console.log(msg);
-          await github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: msg
-          });|
         
