@@ -4,8 +4,6 @@
 name: .NET
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -24,3 +22,25 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
+    - name: check deprecated packages
+      id: check_packages 
+      run: |
+        {
+          echo 'outdated<<EOF'
+          dotnet list package --outdated
+          echo EOF
+        } >> "$GITHUB_OUTPUT"
+    - name: Post deprecated/outdated package to PR
+      uses: actions/github-script@v6
+      with:
+        script: |
+          let msg = ${{ steps.check_packages.outputs.outdated }};
+          msg = msg.replace(/`/g, "_").replace(/;/, "");
+          console.log(msg);
+          await github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: msg
+          });|
+        
