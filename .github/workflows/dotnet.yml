@@ -34,7 +34,7 @@ jobs:
       uses: actions/github-script@v6
       with:
         script: |
-          let msg = "${{ steps.check_packages.outputs.outdated }}"
+          let msg = `${{ steps.check_packages.outputs.outdated }}`
           msg = msg.replace(/`/g, "_").replace(/;/, "")
           console.log(msg)
         
