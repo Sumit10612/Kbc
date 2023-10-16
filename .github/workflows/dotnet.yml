@@ -27,7 +27,7 @@ jobs:
       run: |
         {
           echo 'outdated<<EOF'
-          dotnet list package --outdated
+          dotnet list package --outdated --format json
           echo EOF
         } >> "$GITHUB_OUTPUT"
     - name: Post deprecated/outdated package to PR
