@@ -25,7 +25,7 @@ jobs:
         with:
           script: |
             const output = '${{ steps.dotnet-list.outputs.stdout }}';
-            github.issues.createComment({
+            github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
