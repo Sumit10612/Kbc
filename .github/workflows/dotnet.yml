@@ -2,10 +2,6 @@ name: Check Outdated .NET Packages
 
 on:
   pull_request:
-    types:
-      - synchronize
-      - opened
-      - reopened
 
 jobs:
   outdated-packages:
