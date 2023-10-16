@@ -1,33 +1,38 @@
-name: Post PR Comment with dotnet list package
+name: List .NET Packages
 
 on:
   pull_request:
 
 jobs:
-  post-comment:
+  list-packages:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Check out code
         uses: actions/checkout@v2
 
-      - name: Set up .NET
+      - name: Set up .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 6.x # Adjust the version as needed
+          dotnet-version: 6.x  # Replace with your desired .NET Core version
 
-      - name: Run dotnet list package
-        id: dotnet-list
+      - name: List Packages
         run: dotnet list package
 
       - name: Post PR Comment
+        run: |
+          COMMENT=$(dotnet list package)
+          echo "::set-output name=comment::$COMMENT"
+        id: pr_comment
+
+      - name: Add PR Comment
         uses: actions/github-script@v6
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const output = '${{ steps.dotnet-list.outputs.stdout }}';
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'dotnet list package output:\n```\n' + output + '\n```'
-            });
+              body: '${{ steps.pr_comment.outputs.comment }}'
+            })
