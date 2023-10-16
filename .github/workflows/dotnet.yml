@@ -1,38 +1,45 @@
-name: List .NET Packages
+name: Check Outdated .NET Packages
 
 on:
   pull_request:
+    types:
+      - synchronize
+      - opened
+      - reopened
 
 jobs:
-  list-packages:
+  outdated-packages:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out code
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up .NET Core
+      - name: Set up .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 6.x  # Replace with your desired .NET Core version
+          dotnet-version: 6.x # Adjust to your desired .NET version
 
-      - name: List Packages
-        run: dotnet list package
+      - name: Install project dependencies
+        run: dotnet restore
 
-      - name: Post PR Comment
+      - name: Check outdated packages
         run: |
-          COMMENT=$(dotnet list package)
-          echo "::set-output name=comment::$COMMENT"
-        id: pr_comment
+          outdatedPackages=$(dotnet list package --outdated)
+          echo "Outdated Packages:"
+          echo "$outdatedPackages"
+          echo "::set-output name=outdated-packages::$outdatedPackages"
 
-      - name: Add PR Comment
-        uses: actions/github-script@v6
+      - name: Comment outdated packages
+        uses: actions/github-script@v5
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '${{ steps.pr_comment.outputs.comment }}'
-            })
+            const outdatedPackages = '${{ steps.outdated-packages.outputs["outdated-packages"] }}';
+            if (outdatedPackages.length > 0) {
+              github.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: 'Outdated .NET packages:\n' + outdatedPackages,
+              });
+            }
