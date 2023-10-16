@@ -1,31 +1,42 @@
-name: Post PR Comment with dotnet list package output
+name: Post Package List Comment
 
 on:
   pull_request:
 
 jobs:
-  comment:
+  post-package-list-comment:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check out the code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 6.x
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.x' # Use the desired .NET version
 
-    - name: Install dependencies
-      run: dotnet restore
+      - name: List Packages
+        run: |
+          dotnet restore
+          dotnet list package
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: List packages
-      run: dotnet list package
+      - name: Post Comment
+        run: |
+          COMMENT="```plaintext\n$(dotnet list package  --outdated)\n```"
+          echo "::set-output name=comment::$COMMENT"
+        id: comment
 
-    - name: Post PR Comment
-      run: |
-        COMMENT="```
-        $(dotnet list package --outdated)
-        ```"
-        echo "$COMMENT" > comment.txt
-        gh pr comment ${{ github.event.pull_request.number }} --body "$(cat comment.txt)"
+      - name: Comment on PR
+        uses: actions/github-script@0.9.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "${{ steps.comment.outputs.comment }}"
+            })
