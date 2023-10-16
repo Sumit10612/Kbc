@@ -25,7 +25,7 @@ jobs:
 
       - name: Post Comment
         run: |
-          COMMENT="```plaintext\n$(dotnet list package  --outdated)\n```"
+          COMMENT="```$(dotnet list package  --outdated)```"
           echo "::set-output name=comment::$COMMENT"
         id: comment
 
