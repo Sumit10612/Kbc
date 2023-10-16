@@ -2,6 +2,7 @@ name: Check Outdated .NET Packages
 
 on:
   pull_request:
+  workflow_dispatch:
 
 jobs:
   outdated-packages:
